@@ -1,0 +1,20 @@
+---
+layout: post
+title:  "Primeros pasos"
+date:   2025-11-06 12:17:09
+---
+# Semana 1
+
+Esta primera semana, la he utilizado en su mayor medida para la instalación de software necesario y para empezar a aprender software y métodos que usaré a lo largo de este trabajo.
+
+## Carla
+
+Durante esta semana he instalado Carla en Ubuntu 22.04. Para su instalación he descargado tanto Carla como UE4, motor en el que se basa. Finalmente, no he podido probarlo puesto que ha fallado en el último paso de la instalación. Esta semana intentaré tenerla funcional.
+
+## Github Pages
+
+He investigado sobre el uso de Github Pages y algunas de sus templates. Durante el transcurso del TFG, cambiaré la parte visual de ser necesario.
+
+## Lectura
+
+Por úlimo he indagado un poco sobre imitation learning y un poco sobre el funcionamiento de pyTorch
