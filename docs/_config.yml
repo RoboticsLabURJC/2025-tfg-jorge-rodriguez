@@ -84,7 +84,7 @@ defaults:
       path: ""
       type: posts
     values:
-      layout: single
+      layout: post
       author_profile: true
       read_time: true
       comments: true
@@ -105,5 +105,5 @@ tag_archive:
   type: liquid
   path: /tags/
 
-theme: jekyll-theme-slate
+#theme: jekyll-theme-slate
 
