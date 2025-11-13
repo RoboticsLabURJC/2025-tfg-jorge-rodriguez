@@ -59,7 +59,7 @@ plugins:
 
 author:
   name   : "Jorge Rodriguez Gonzalez"
-  avatar : ""
+  avatar : "/assets/images/avatar.jpg"
   bio    : "Estudiante de Robotica Software en URJC"
   links:
     - label: "GitHub"
