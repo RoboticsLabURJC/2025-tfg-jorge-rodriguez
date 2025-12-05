@@ -32,6 +32,13 @@ def lidar_callback(point_cloud):
 
     np.savetxt(filename, data, fmt="%.4f")
 
+def imu_callback(data):
+    print(f"acc -> {data.accelerometer}")
+    print(f"gyro -> {data.gyroscope}")
+
+def gnss_callback(position):
+    print(f"latitude -> {position.latitude} - longitude -> {position.longitude} - altitude -> {position.altitude}")
+
 def main_fun():
 
     actor_list = []
@@ -71,16 +78,49 @@ def main_fun():
 
         lidar = world.spawn_actor(lidar_bp, lidar_transform, attach_to=vehicle)
 
+        imu_bp = world.get_blueprint_library().find('sensor.other.imu')
+
+        imu_bp.set_attribute('noise_accel_stddev_x', '0.0')
+        imu_bp.set_attribute('noise_accel_stddev_y', '0.0')
+        imu_bp.set_attribute('noise_accel_stddev_z', '0.0')
+        imu_bp.set_attribute('noise_gyro_stddev_x', '0.0')
+        imu_bp.set_attribute('noise_gyro_stddev_y', '0.0')
+        imu_bp.set_attribute('noise_gyro_stddev_z', '0.0')
+
+        imu_transform = carla.Transform(carla.Location(x=0, z=0))
+
+        imu = world.spawn_actor(imu_bp, imu_transform, attach_to=vehicle)
+
+        gnss_bp = world.get_blueprint_library().find('sensor.other.gnss')
+
+        gnss_bp.set_attribute('noise_alt_bias', '0.0')
+        gnss_bp.set_attribute('noise_alt_stddev', '0.0')
+        gnss_bp.set_attribute('noise_lat_bias', '0.0')
+        gnss_bp.set_attribute('noise_lat_stddev', '0.0')
+        gnss_bp.set_attribute('noise_lon_bias', '0.0')
+        gnss_bp.set_attribute('noise_lon_stddev', '0.0')
+        gnss_bp.set_attribute('noise_seed', '0.0')
+        gnss_bp.set_attribute('sensor_tick', '0.0')
+
+        gnss_transform = carla.Transform(carla.Location(x=0, z=0))
+
+        gnss = world.spawn_actor(gnss_bp, gnss_transform, attach_to=vehicle)
+
         camera.listen(lambda data: camera_callback(data, "RGB CAMERA"))
         lidar.listen(lambda pointcloud: lidar_callback(pointcloud))
+        imu.listen(lambda data: imu_callback(data))
+        gnss.listen(lambda position: gnss_callback(position))
+
         while time.time() - start_time < 10:
             vehicle.apply_control(carla.VehicleControl(throttle=1.0, steer=-0.2))
             time.sleep(0.05)
 
     finally:
+        gnss.destroy()
         camera.destroy()
         lidar.destroy()
         client.apply_batch([carla.command.DestroyActor(x) for x in actor_list])
+        imu.destroy()
 
 if __name__ == '__main__':
 
