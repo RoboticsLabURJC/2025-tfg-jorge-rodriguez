@@ -6,4 +6,5 @@ vendor
 /carla_tests/_out
 /carla_tests/_dataset
 /carla_tests/_firstdataset
-
+/common_utils/
+carla_tests/get_data_manual_steeringwheel.py
