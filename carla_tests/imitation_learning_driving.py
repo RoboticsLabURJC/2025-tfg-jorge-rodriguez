@@ -107,7 +107,11 @@ def main_fun():
     client = carla.Client('localhost', 2000)
     client.set_timeout(10.0)
 
+    client.load_world_if_different('Town01')
+
     world = client.get_world()
+
+    world.set_weather(carla.WeatherParameters.ClearNoon)
 
     bp = world.get_blueprint_library().filter('charger_2020')[0]
     spawn_points = world.get_map().get_spawn_points()
@@ -120,7 +124,7 @@ def main_fun():
     camera_bp.set_attribute("fov", "90")
 
     camera_transform = carla.Transform(
-        carla.Location(x=1.5, z=1.7)
+        carla.Location(x=1.5, z=2.4)
     )
 
     camera = world.spawn_actor(camera_bp, camera_transform, attach_to=vehicle)
