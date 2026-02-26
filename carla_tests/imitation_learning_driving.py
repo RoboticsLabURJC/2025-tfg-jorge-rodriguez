@@ -60,11 +60,11 @@ class PilotNet(nn.Module):
 device = torch.device("cpu")
 
 model = PilotNet().to(device)
-model.load_state_dict(torch.load("pilotnet_weights.pth", map_location=device))
-model.eval()  # Muy importante para inferencia
+model.load_state_dict(torch.load("./weigths/pilotnet_weights_dagger_10epoch.pth", map_location=device))
+model.eval()
 
 preprocess = T.Compose([
-    T.Resize((66, 200)),             # Igual que en entrenamiento
+    T.Resize((66, 200)),
     T.ToTensor(),
     T.Normalize(mean=[0.5, 0.5, 0.5],
                 std=[0.5, 0.5, 0.5])
@@ -115,7 +115,7 @@ def main_fun():
 
     bp = world.get_blueprint_library().filter('charger_2020')[0]
     spawn_points = world.get_map().get_spawn_points()
-    vehicle = world.spawn_actor(bp, spawn_points[0])
+    vehicle = world.spawn_actor(bp, spawn_points[10])
 
     blueprint_library = world.get_blueprint_library()
     camera_bp = blueprint_library.find("sensor.camera.rgb")
@@ -138,7 +138,7 @@ def main_fun():
                 
             if latest_frame is not None:
                 img = latest_frame.convert("RGB")
-                raw_str = img.tobytes()
+                raw_str = latest_frame.tobytes()
                 pg_image = pygame.image.fromstring(raw_str, img.size, "RGB")
                 display.blit(pg_image, (0,0))
                 pygame.display.flip()
