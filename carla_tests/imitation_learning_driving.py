@@ -60,7 +60,7 @@ class PilotNet(nn.Module):
 device = torch.device("cpu")
 
 model = PilotNet().to(device)
-model.load_state_dict(torch.load("./weigths/pilotnet_weights_noise_injection.pth", map_location=device))
+model.load_state_dict(torch.load("./weigths/pilotnet_weights_trial.pth", map_location=device))
 model.eval()
 
 preprocess = T.Compose([
@@ -91,7 +91,12 @@ def camera_callback(image, vehicle):
 
     pil_image = Image.fromarray(array)
 
-    steer_value = predict_steering(pil_image)
+    width, height = pil_image.size
+
+    # Eliminates sky as its not necessary
+    crop = pil_image.crop((0, height*0.35, width, height))
+
+    steer_value = predict_steering(crop)
     control = carla.VehicleControl()
     control.throttle = 0.5
     control.steer = steer_value
@@ -118,7 +123,7 @@ def main_fun():
 
     bp = world.get_blueprint_library().filter('vehicle.mercedes.coupe_2020')[0]
     spawn_points = world.get_map().get_spawn_points()
-    vehicle = world.spawn_actor(bp, spawn_points[20])
+    vehicle = world.spawn_actor(bp, spawn_points[10])
 
     blueprint_library = world.get_blueprint_library()
     camera_bp = blueprint_library.find("sensor.camera.rgb")
