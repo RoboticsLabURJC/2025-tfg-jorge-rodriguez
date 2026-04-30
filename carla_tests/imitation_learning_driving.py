@@ -50,7 +50,7 @@ class PilotNet(nn.Module):
             nn.ReLU(),
             nn.Linear(50, 10),
             nn.ReLU(),
-            nn.Linear(10, 1)
+            nn.Linear(10, 2)
         )
 
     def forward(self, x):
@@ -60,7 +60,7 @@ class PilotNet(nn.Module):
 device = torch.device("cpu")
 
 model = PilotNet().to(device)
-model.load_state_dict(torch.load("./weigths/pilotnet_weights_trial.pth", map_location=device))
+model.load_state_dict(torch.load("./weigths/30k_01_st_60_40.pth", map_location=device))
 model.eval()
 
 preprocess = T.Compose([
@@ -72,14 +72,17 @@ preprocess = T.Compose([
 
 latest_frame = None
 
-def predict_steering(image: Image.Image) -> float:
+def predict_steering(image: Image.Image):
 
     img_tensor = preprocess(image).unsqueeze(0).to(device)
     
     with torch.no_grad():
-        steering = model(img_tensor)
+        pred = model(img_tensor)
     
-    return steering.item()
+    steering = pred[0, 0].item()
+    throttle = pred[0, 1].item()
+
+    return steering, throttle
 
 def camera_callback(image, vehicle):
     global latest_frame
@@ -96,9 +99,9 @@ def camera_callback(image, vehicle):
     # Eliminates sky as its not necessary
     crop = pil_image.crop((0, height*0.35, width, height))
 
-    steer_value = predict_steering(crop)
+    steer_value, throttle_value = predict_steering(crop)
     control = carla.VehicleControl()
-    control.throttle = 0.5
+    control.throttle = throttle_value
     control.steer = steer_value
     vehicle.apply_control(control)
 
@@ -123,7 +126,7 @@ def main_fun():
 
     bp = world.get_blueprint_library().filter('vehicle.mercedes.coupe_2020')[0]
     spawn_points = world.get_map().get_spawn_points()
-    vehicle = world.spawn_actor(bp, spawn_points[10])
+    vehicle = world.spawn_actor(bp, spawn_points[0])
 
     blueprint_library = world.get_blueprint_library()
     camera_bp = blueprint_library.find("sensor.camera.rgb")
