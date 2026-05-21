@@ -60,7 +60,7 @@ class PilotNet(nn.Module):
 device = torch.device("cpu")
 
 model = PilotNet().to(device)
-model.load_state_dict(torch.load("./weigths/30k_01_st_60_40.pth", map_location=device))
+model.load_state_dict(torch.load("./weigths/w_157_st_65_35_045.pth", map_location=device))
 model.eval()
 
 preprocess = T.Compose([
@@ -97,7 +97,7 @@ def camera_callback(image, vehicle):
     width, height = pil_image.size
 
     # Eliminates sky as its not necessary
-    crop = pil_image.crop((0, height*0.35, width, height))
+    crop = pil_image.crop((0, height*0.45, width, height))
 
     steer_value, throttle_value = predict_steering(crop)
     control = carla.VehicleControl()
@@ -118,7 +118,7 @@ def main_fun():
     client = carla.Client('localhost', 2000)
     client.set_timeout(10.0)
 
-    client.load_world_if_different('Town01')
+    client.load_world_if_different('Town07')
 
     world = client.get_world()
 
