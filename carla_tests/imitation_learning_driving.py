@@ -60,7 +60,9 @@ class PilotNet(nn.Module):
 device = torch.device("cpu")
 
 model = PilotNet().to(device)
-model.load_state_dict(torch.load("./weigths/w_157_st_65_35_045.pth", map_location=device))
+model.load_state_dict(torch.load("./weigths/SHAP_NO_CROP.pth", map_location=device))
+# model.load_state_dict(torch.load("./weigths/w_157_st_65_35.pth", map_location=device))
+# model.load_state_dict(torch.load("./weigths/w_157_st_65_35_045.pth", map_location=device))
 model.eval()
 
 preprocess = T.Compose([
@@ -118,7 +120,7 @@ def main_fun():
     client = carla.Client('localhost', 2000)
     client.set_timeout(10.0)
 
-    client.load_world_if_different('Town07')
+    client.load_world_if_different('Town01')
 
     world = client.get_world()
 
@@ -126,7 +128,7 @@ def main_fun():
 
     bp = world.get_blueprint_library().filter('vehicle.mercedes.coupe_2020')[0]
     spawn_points = world.get_map().get_spawn_points()
-    vehicle = world.spawn_actor(bp, spawn_points[0])
+    vehicle = world.spawn_actor(bp, spawn_points[10])
 
     blueprint_library = world.get_blueprint_library()
     camera_bp = blueprint_library.find("sensor.camera.rgb")
