@@ -9,3 +9,4 @@ vendor
 /common_utils/
 carla_tests/get_data_manual_steeringwheel.py
 /carla_tests/weigths
+/pytorch_files/new_pilot_net.ipynb
